@@ -1,0 +1,74 @@
+#include <iostream>
+#include <cmath>
+#include <ctime>
+
+using namespace std;
+
+static long long N = 9;
+static long long T[10000] = { 2, 3, 5, 7, 11, 13, 17, 19, 23 }; // des nombres premiers
+
+bool estPremier5(long long Nombre) {
+    // Traiter le cas des nombres paires
+    if (Nombre < 2 || (Nombre > 2 && Nombre % 2 == 0)) {
+        return false;
+    }
+
+    // Utiliser les diviseurs présents dans T[] où indice < N et T[indice] <= sqrt(Nombre)
+    for (long long indice = 0; indice < N && T[indice] <= sqrt(Nombre); ++indice) {
+        if (Nombre % T[indice] == 0) {
+            return false;
+        }
+    }
+
+    // Si on a utilisé tous les diviseurs du tableau, on continue avec diviseur = T[N-1] (devrait être impair)
+    // et on ne traite que des diviseurs impairs <= sqrt(Nombre)
+    long long diviseur = T[N - 1];
+    while (diviseur * diviseur <= Nombre) {
+        if (Nombre % diviseur == 0) {
+            return false;
+        }
+        diviseur += 2; // On ne traite que des diviseurs impairs
+    }
+
+    // Si Nombre est premier, on le rajoute au tableau T[] en position N puis on incrémente N
+    T[N++] = Nombre;
+
+    return true;
+}
+
+int main() {
+    long long valeurMaximum;
+
+    cout << "Essayez les nombres de 2 a ? : ";
+    cin >> valeurMaximum;
+
+    // Première fois
+    clock_t debut = clock();
+    long long Compteur = 0;
+    for (long long Nombre = 2; Nombre <= valeurMaximum; ++Nombre)
+        if (estPremier5(Nombre))
+            Compteur++;
+    clock_t fin = clock();
+
+    cout << "Il y a " << Compteur << " nombres premiers dans l'intervalle." << endl
+        << endl;
+    cout << "Temps d'execution " << (fin - debut) / (double)CLOCKS_PER_SEC << " secondes." << endl
+        << endl
+        << endl;
+
+    // Deuxième fois
+    debut = clock();
+    Compteur = 0;
+    for (long long Nombre = 2; Nombre <= valeurMaximum; ++Nombre)
+        if (estPremier5(Nombre))
+            Compteur++;
+    fin = clock();
+
+    cout << "Il y a " << Compteur << " nombres premiers dans l'intervalle." << endl
+        << endl;
+    cout << "Temps d'execution " << (fin - debut) / (double)CLOCKS_PER_SEC << " secondes." << endl
+        << endl
+        << endl;
+
+    return 0;
+}
